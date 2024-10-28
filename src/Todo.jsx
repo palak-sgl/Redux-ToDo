@@ -80,76 +80,110 @@
 // };
 
 // export default Todo;
-
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addTodo, deleteTodo, toggleComplete } from "./features/todoSlice";
+import {
+  addTodo,
+  deleteTodo,
+  toggleComplete,
+  editTodo,
+} from "./features/todoSlice";
 
 const Todo = () => {
   const [text, setText] = useState("");
+  const [editId, setEditId] = useState(null); // Track editing state
   const todos = useSelector((state) => state.todos);
   const dispatch = useDispatch();
 
   const handleInputChange = (e) => {
     setText(e.target.value);
   };
+
   const handleAddTodo = () => {
     if (text) {
-      dispatch(addTodo(text));
+      if (editId) {
+        dispatch(editTodo({ id: editId, newText: text }));
+        setEditId(null);
+      } else {
+        dispatch(addTodo(text));
+      }
       setText("");
     }
   };
+
   const handleToggleComplete = (id) => {
     dispatch(toggleComplete(id));
   };
+
   const handleDeleteTodo = (id) => {
     dispatch(deleteTodo(id));
+  };
+
+  const handleEditTodo = (todo) => {
+    setEditId(todo.id);
+    setText(todo.text);
   };
 
   return (
     <div className="bg-[#fefefe] min-h-screen flex flex-col items-center py-10">
       <div className="w-full max-w-lg bg-white rounded-md shadow-md p-5">
-        <h1 className="text-2xl font-semibold text-gray-900 mb-6">Notes</h1>
+        <div className="flex justify-between">
+          <h1 className="text-2xl font-semibold text-blue-500 mb-6">Notes</h1>
+          <h1 className="text-gray-400 text-sm mt-2">
+            {todos.length}
+            {todos.length === 1 ? " Task" : " Tasks"}
+          </h1>
+        </div>
+
         <div className="flex items-center gap-3 mb-4">
           <input
             type="text"
             value={text}
             onChange={handleInputChange}
-            className="flex-1 bg-gray-50 text-gray-800 rounded-md py-2 px-4 border border-gray-100 focus:ring-1 focus:ring-gray-200 focus:outline-none"
+            className="flex-1 bg-white text-gray-800 rounded-md py-2 px-4 border border-gray-100 focus:ring-1 focus:ring-gray-200 focus:outline-none"
             placeholder="New note"
           />
           <button
             onClick={handleAddTodo}
             className="text-blue-500 font-semibold px-3 py-1 hover:underline"
           >
-            Add
+            {editId ? "Update" : "Add"}
           </button>
         </div>
+
         <ul className="divide-y divide-gray-200">
           {todos.map((todo) => (
             <li
               key={todo.id}
-              className="flex justify-between items-center py-3"
+              className="flex justify-between items-center py-3 px-2"
             >
-              <span
-                className={`text-gray-800 ${
-                  todo.completed ? "line-through text-gray-400" : ""
-                }`}
-              >
-                {todo.text}
-              </span>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => handleToggleComplete(todo.id)}
-                  className="text-green-500 hover:underline mr-2"
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={todo.completed}
+                  onChange={() => handleToggleComplete(todo.id)}
+                  className="mr-3 mt-1 h-3 w-3 rounded accent-blue-500"
+                />
+                <span
+                  className={`text-gray-800 ${
+                    todo.completed ? "line-through text-gray-300" : ""
+                  }`}
                 >
-                  {todo.completed ? "Undo" : "Done"}
+                  {todo.text}
+                </span>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => handleEditTodo(todo)}
+                  className="text-yellow-500 hover:underline mr-2"
+                >
+                  <i class="fa-regular fa-pen-to-square"></i>
                 </button>
                 <button
                   onClick={() => handleDeleteTodo(todo.id)}
-                  className="text-red-500 hover:underline mr-2"
+                  className="text-red-500 hover:underline"
                 >
-                  <i class="fa-solid fa-trash"></i>
+                  <i className="fa-solid fa-trash"></i>
                 </button>
               </div>
             </li>
