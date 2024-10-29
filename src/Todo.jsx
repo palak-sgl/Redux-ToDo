@@ -1,98 +1,12 @@
-// import React, { useState } from "react";
-// import { useSelector, useDispatch } from "react-redux";
-// import { addTodo, deleteTodo, toggleComplete } from "./features/todoSlice";
-
-// const Todo = () => {
-//   const [text, setText] = useState("");
-//   const todos = useSelector((state) => state.todos);
-//   const dispatch = useDispatch();
-
-//   const handleInputChange = (e) => {
-//     setText(e.target.value);
-//   };
-//   const handleAddTodo = () => {
-//     if (text) {
-//       dispatch(addTodo(text));
-//       setText("");
-//     }
-//   };
-//   const handleToggleComplete = (id) => {
-//     dispatch(toggleComplete(id));
-//   };
-//   const handleDeleteTodo = (id) => {
-//     dispatch(deleteTodo(id));
-//   };
-
-//   return (
-//     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-200 to-purple-400 p-5">
-//       <div className="w-full max-w-md bg-white bg-opacity-10 backdrop-blur-md rounded-2xl shadow-2xl p-8">
-//         <h1 className="text-3xl font-bold text-white text-center mb-6">
-//           My Todos
-//         </h1>
-//         <div className="flex items-center gap-4 mb-3">
-//           <input
-//             type="text"
-//             value={text}
-//             onChange={handleInputChange}
-//             className="flex-1 bg-white bg-opacity-20 text-white placeholder-gray-200 rounded-lg py-3 px-4 focus:ring-2 focus:ring-indigo-400  focus:outline-none transition-all"
-//             placeholder="Enter a new task..."
-//           />
-//           <button
-//             onClick={handleAddTodo}
-//             className="py-3 px-4 bg-indigo-300 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-400 active:scale-95 transition-transform"
-//           >
-//             Add
-//           </button>
-//         </div>
-//         <ul className="space-y-4">
-//           {todos.map((todo) => (
-//             <li
-//               key={todo.id}
-//               className="flex justify-between items-center p-4 rounded-lg bg-white bg-opacity-20 shadow-md hover:bg-opacity-30 transition-all"
-//             >
-//               <span
-//                 className={`text-lg text-black ${
-//                   todo.completed ? "line-through text-gray-300" : "text-white"
-//                 }`}
-//               >
-//                 {todo.text}
-//               </span>
-//               <div className="flex items-center gap-2">
-//                 <button
-//                   onClick={() => handleToggleComplete(todo.id)}
-//                   className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 active:scale-95 transition-transform"
-//                 >
-//                   {todo.completed ? "Undo" : "Done"}
-//                 </button>
-//                 <button
-//                   onClick={() => handleDeleteTodo(todo.id)}
-//                   className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 active:scale-95 transition-transform"
-//                 >
-//                   <i className="fa-solid fa-trash"></i>
-//                 </button>
-//               </div>
-//             </li>
-//           ))}
-//         </ul>
-//       </div>
-//     </div>
-//   );
-// };
-// export default Todo;
-
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  addTodo,
-  deleteTodo,
-  toggleComplete,
-  editTodo,
-} from "./features/todoSlice";
+import { addTodo, deleteTodo, toggleComplete, editTodo } from "./actions";
 
 const Todo = () => {
   const [text, setText] = useState("");
-  const [editId, setEditId] = useState(null); // Track editing state
-  const todos = useSelector((state) => state.todos);
+  const [editId, setEditId] = useState(null);
+  const todos = useSelector((state) => state.todos.todos);
+
   const dispatch = useDispatch();
 
   const handleInputChange = (e) => {
@@ -102,7 +16,7 @@ const Todo = () => {
   const handleAddTodo = () => {
     if (text) {
       if (editId) {
-        dispatch(editTodo({ id: editId, newText: text }));
+        dispatch(editTodo(editId, text));
         setEditId(null);
       } else {
         dispatch(addTodo(text));
@@ -125,14 +39,13 @@ const Todo = () => {
   };
 
   return (
-    <div className="bg-[#fefefe] min-h-screen flex flex-col items-center py-10">
-      <div className="w-full max-w-lg bg-white rounded-md shadow-md p-5">
-        <div className="flex justify-between">
-          <h1 className="text-2xl font-semibold text-blue-500 mb-6">Notes</h1>
-          <h1 className="text-gray-400 text-sm mt-2">
-            {todos.length}
-            {todos.length === 1 ? " Task" : " Tasks"}
-          </h1>
+    <div className="bg-[#f4f4f8] min-h-screen flex flex-col items-center py-10 text-gray-800">
+      <div className="w-full max-w-lg bg-[#ffffff] rounded-lg shadow-lg p-5 border border-gray-200">
+        <div className="flex justify-between mb-6">
+          <h1 className="text-2xl font-semibold text-[#4a5568]">Tasks</h1>
+          <span className="text-sm text-gray-500 mt-2">
+            {todos.length} {todos.length === 1 ? "Task" : "Tasks"}
+          </span>
         </div>
 
         <div className="flex items-center gap-3 mb-4">
@@ -140,18 +53,18 @@ const Todo = () => {
             type="text"
             value={text}
             onChange={handleInputChange}
-            className="flex-1 bg-white text-gray-800 rounded-md py-2 px-4 border border-gray-100 focus:ring-1 focus:ring-gray-200 focus:outline-none"
-            placeholder="New note"
+            className="flex-1 bg-gray-50 text-gray-700 rounded-md py-2 px-4 border border-gray-300 focus:ring-2 focus:ring-[#90cdf4] outline-none"
+            placeholder="Add a new task..."
           />
           <button
             onClick={handleAddTodo}
-            className="text-blue-500 font-semibold px-3 py-1 hover:underline"
+            className="bg-[#3182ce] text-white font-semibold px-4 py-2 rounded-md hover:bg-[#2b6cb0] transition duration-200"
           >
             {editId ? "Update" : "Add"}
           </button>
         </div>
 
-        <ul className="divide-y divide-gray-200">
+        <ul className="divide-y divide-gray-300">
           {todos.map((todo) => (
             <li
               key={todo.id}
@@ -162,11 +75,11 @@ const Todo = () => {
                   type="checkbox"
                   checked={todo.completed}
                   onChange={() => handleToggleComplete(todo.id)}
-                  className="mr-3 mt-1 h-3 w-3 rounded accent-blue-500"
+                  className="mr-3 h-3 w-3 mt-0.5 text-[#3182ce] bg-gray-50 rounded focus:ring-[#3182ce]"
                 />
                 <span
-                  className={`text-gray-800 ${
-                    todo.completed ? "line-through text-gray-300" : ""
+                  className={`text-gray-700 ${
+                    todo.completed ? "line-through text-gray-400" : ""
                   }`}
                 >
                   {todo.text}
@@ -175,13 +88,13 @@ const Todo = () => {
               <div className="flex gap-3">
                 <button
                   onClick={() => handleEditTodo(todo)}
-                  className="text-yellow-500 hover:underline mr-2"
+                  className="text-[#f6ad55] hover:text-[#dd6b20]"
                 >
-                  <i class="fa-regular fa-pen-to-square"></i>
+                  <i className="fa-regular fa-pen-to-square"></i>
                 </button>
                 <button
                   onClick={() => handleDeleteTodo(todo.id)}
-                  className="text-red-500 hover:underline"
+                  className="text-[#e53e3e] hover:text-[#c53030]"
                 >
                   <i className="fa-solid fa-trash"></i>
                 </button>
@@ -195,14 +108,3 @@ const Todo = () => {
 };
 
 export default Todo;
-
-// actions - type, payoad
-//add_note(type:(ADD_NEW_ITEM),payload){
-// paylaod
-// }
-
-//reducer -
-//state,action - ADD_NOTE
-// {...state,acton.paload}
-
-//export const ADD_NOTE as "ADD_NOTE"
