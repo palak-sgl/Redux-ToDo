@@ -23,7 +23,6 @@ const todoSlice = createSlice({
       if (index !== -1) {
         state.splice(index, 1);
       }
-      //   state = state.filter((todo) => todo.id !== action.payload);
     },
     editTodo: (state, action) => {
       const { id, newText } = action.payload;

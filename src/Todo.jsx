@@ -78,8 +78,8 @@
 //     </div>
 //   );
 // };
-
 // export default Todo;
+
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -195,3 +195,14 @@ const Todo = () => {
 };
 
 export default Todo;
+
+// actions - type, payoad
+//add_note(type:(ADD_NEW_ITEM),payload){
+// paylaod
+// }
+
+//reducer -
+//state,action - ADD_NOTE
+// {...state,acton.paload}
+
+//export const ADD_NOTE as "ADD_NOTE"
