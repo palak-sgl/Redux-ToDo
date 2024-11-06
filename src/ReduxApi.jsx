@@ -1,50 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // import { setData, addPost, updatePost, deletePost } from "./features/apiSlice";
-import { setData, addPost, updatePost, deletePost } from "./api/ApiActions";
+import { setData, addPost, updatePost } from "./api/ApiActions";
 import Postcard from "./components/Postcard";
 
 const ReduxApi = () => {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.posts.posts);
-  console.log("posts:", posts);
-
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
   const [editId, setEditId] = useState(null);
+  const [mydata, setMyData] = useState({ title: "", body: "" });
 
   const handleAddPost = (e) => {
     e.preventDefault();
-    const newPost = { id: Date.now(), title, body };
+    const newPost = { id: Date.now(), title: mydata.title, body: mydata.body };
     try {
       if (editId) {
-        dispatch(updatePost({ id: editId, title, body }));
+        // dispatch(updatePost({ id: editId, title, body }));
+        dispatch(
+          updatePost({ id: editId, title: mydata.title, body: mydata.body })
+        );
         setEditId(null);
       } else {
         dispatch(addPost(newPost));
       }
-      setTitle("");
-      setBody("");
+      setMyData({ title: "", body: "" });
     } catch (error) {
       console.log(error);
     }
-    // const newPost = { id: Date.now(), title, body };
-    // dispatch(addPost(newPost));
-    // setTitle("");
-    // setBody("");
   };
   const handleEdit = (post) => {
     setEditId(post.id);
-    setTitle(post.title);
-    setBody(post.body);
-  };
-
-  const handleDelete = (post) => {
-    try {
-      dispatch(deletePost(post.id));
-    } catch (error) {
-      console.error("Error deleting post:", error);
-    }
+    setMyData({ title: post.title, body: post.body });
   };
 
   const fetchData = async () => {
@@ -72,15 +58,19 @@ const ReduxApi = () => {
         <input
           type="text"
           placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={mydata.title}
+          onChange={(e) =>
+            setMyData((prevData) => ({ ...prevData, title: e.target.value }))
+          }
           required
           className="border p-2 mb-2 w-full"
         />
         <textarea
           placeholder="Body"
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
+          value={mydata.body}
+          onChange={(e) =>
+            setMyData((prevData) => ({ ...prevData, body: e.target.value }))
+          }
           required
           className="border p-2 mb-2 w-full"
         />
@@ -93,12 +83,7 @@ const ReduxApi = () => {
       </form>
       <ul className="grid grid-cols-4 gap-3 px-10">
         {posts?.map((item) => (
-          <Postcard
-            item={item}
-            key={item.id}
-            handleDelete={handleDelete}
-            handleEdit={handleEdit}
-          />
+          <Postcard item={item} key={item.id} handleEdit={handleEdit} />
         ))}
       </ul>
     </div>

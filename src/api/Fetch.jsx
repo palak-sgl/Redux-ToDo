@@ -11,7 +11,6 @@ function Fetch() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const post = { title, body, id: Date.now() };
-    //res\cored - index data[index][title]=newtitle,
     if (editId) {
       updatePost(editId, post)
         .then((updatedPost) => {
