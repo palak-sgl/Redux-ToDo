@@ -79,3 +79,102 @@
 //   );
 // };
 // export default Todo;
+
+// import { useSelector, useDispatch } from "react-redux";
+// import { increment, decrement } from "./features/counterSlice";
+// function App() {
+//   const count = useSelector((state) => state.counter.value);
+//   const dispatch = useDispatch();
+//   return (
+//     <>
+//       <button onClick={(e) => dispatch(increment())}>increment</button>
+//       <h1>count: {count}</h1>
+//       <button onClick={(e) => dispatch(decrement())}>decrement</button>
+//     </>
+//   );
+// }
+
+// import Swr from "./components/Swr";
+// export default App;
+// import Todo from "./Todo";
+// import UseReducer from "./useReducer";
+// import { useEffect, useState } from "react";
+// import { getPosts, createPost, updatePost, deletePost } from "./api/fetchApi";
+// import Postcard from "./components/Postcard";
+
+// function App() {
+//   const [data, setData] = useState([]);
+
+//   // Function to create a new post
+//   const addNewPost = async () => {
+//     const newPost = {
+//       title: "New Post",
+//       body: "This is a new post. Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, deserunt.",
+//     };
+
+//     try {
+//       const response = await createPost(newPost);
+//       console.log("Created Post:", response);
+//       setData((prevData) => [response, ...prevData]); // Add the new post to the state
+//     } catch (error) {
+//       console.error("Error creating post:", error);
+//     }
+//   };
+
+//   // Function to update an existing post
+//   const editPost = async (id) => {
+//     const updatedPost = {
+//       title: "Updated Title",
+//       body: "This is the updated content.",
+//     };
+
+//     try {
+//       const post = await updatePost(id, updatedPost);
+//       console.log("Updated post:", post);
+//       setData((prevData) =>
+//         prevData.map((item) => (item.id === id ? post : item))
+//       );
+//     } catch (error) {
+//       console.error("Error updating post:", error);
+//     }
+//   };
+
+//   // Fetch posts when the component mounts
+//   const fetchPosts = async () => {
+//     const posts = await getPosts();
+//     setData(posts);
+//   };
+//   useEffect(() => {
+//     fetchPosts();
+//     editPost(8);
+//   }, []);
+//   useEffect(() => {
+//     deletePost(10).then((success) => {
+//       console.log("Deleted:", success);
+//       fetchPosts();
+//     });
+//   }, []);
+
+//   return (
+//     <div className="flex flex-col items-center mt-5">
+//       <button
+//         className="bg-blue-300 hover:bg-blue-400 p-2 rounded-md"
+//         onClick={addNewPost}
+//       >
+//         Add New Post
+//       </button>
+//       {/* Trigger to create a new post */}
+//       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-6">
+//         {data.length > 0 ? (
+//           data.map((e) => (
+//             <Postcard key={e.id} title={e.title + e.id} body={e.body} />
+//           ))
+//         ) : (
+//           <p>No data</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default App;
